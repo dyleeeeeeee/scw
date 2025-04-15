@@ -36,12 +36,12 @@ services:
         - server
         - redis
 
-    db:
-      image: postgres:13.0-alpine
-      restart: unless-stopped
-      volumes:
-        - postgres_data:/var/lib/postgresql/data/
-      env_file:
-        - .env
-      expose:
-        - 5432
+  db:
+    image: postgres:13.0-alpine
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    expose:
+      - 5432

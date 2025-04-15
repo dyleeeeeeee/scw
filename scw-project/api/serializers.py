@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from .models import TaskModel
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -19,4 +20,5 @@ class RegisterSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             password=validated_data['password']
         )
+        token = Token.objects.create(user=user)
         return user
