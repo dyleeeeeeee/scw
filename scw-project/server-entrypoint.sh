@@ -1,6 +1,6 @@
 #!/bin/sh
 
-until cd /app/scw-project
+until cd /app
 do
     echo "Waiting for server volume..."
 done
