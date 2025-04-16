@@ -14,12 +14,12 @@ class ProcessTaskView(APIView):
     """
     Handles POST requests to /api/process to create a new task.
     """
-    permission_classes = [permissions.AllowAny] # Or permissions.IsAuthenticated
+    permission_classes = [permissions.IsAuthenticated] # Or permissions.IsAuthenticated
 
     def post(self, request, *args, **kwargs):
         # Simulated DB operation.
         result = sample_task.delay(request.data)
-        serializer = TaskSerializer(data=request.data)
+        serializer = TaskSerializer(result)
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -31,14 +31,20 @@ class TaskViewSet(viewsets.ReadOnlyModelViewSet): # ReadOnly to only read resour
     """
     queryset = TaskModel.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = [permissions.AllowAny]
 
     # Action to get status for a specific task
     # endpoint like /api/tasks/{pk}
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['get'], url_path='status')
     def status(self, request, pk=None):
-        task = self.get_object() # Gets the task instance
-        serializer = self.get_serializer(task)
-        return Response(serializer.data)
+        if not pk:
+            task = self.get_object() # Gets the task instance
+            serializer = self.get_serializer(task)
+            return Response(serializer.data)
+        else:
+            task = TaskModel.objects.get(id=pk)
+            serializer = self.get_serializer(task)
+            return Response(serializer.data)
 
 
 from .serializers import RegisterSerializer
@@ -48,3 +54,10 @@ class RegisterView(APIView):
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
