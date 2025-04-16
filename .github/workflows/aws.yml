@@ -31,7 +31,7 @@ on:
     branches: [ "main" ]
 
 env:
-  AWS_REGION: us-east1                   # set this to your preferred AWS region, e.g. us-west-1
+  AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: default/swc-project           # set this to your Amazon ECR repository name
   ECS_SERVICE: swc-service                 # set this to your Amazon ECS service name
   ECS_CLUSTER: swc-project                 # set this to your Amazon ECS cluster name
@@ -52,7 +52,7 @@ jobs:
       uses: actions/checkout@v4  # Use the checkout action to checkout the code
       
     - name: Test  # Step 3: Run the tests
-      run: python3 manage.py test  # Use Docker Compose to run the Django unit tests
+      run: python3 scw-project/manage.py test  # Use Docker Compose to run the Django unit tests
 
   deploy:
     name: Deploy
