@@ -25,7 +25,7 @@ def health_check(request):
   return JsonResponse({"status": "ok"})
 
 from rest_framework.authtoken import views
-from api.views import health_check
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-token-auth/', views.obtain_auth_token),
