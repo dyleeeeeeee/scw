@@ -16,10 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
+
+
+# Define the simple health check view function directly here (quickest way)
+def health_check(request):
+  """Returns a simple JSON response indicating the service is up."""
+  return JsonResponse({"status": "ok"})
 
 from rest_framework.authtoken import views
+from api.views import health_check
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-token-auth/', views.obtain_auth_token),
     path('', include('api.urls')),
+    path('', health_check, name='health_check'),
 ]
