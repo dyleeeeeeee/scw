@@ -6,6 +6,8 @@ COPY . /app/
 
 RUN pip install -r requirements.txt
 
+# Add this line to install netcat (OpenBSD variant is common)
+RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8000
 

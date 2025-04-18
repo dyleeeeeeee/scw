@@ -1,23 +1,25 @@
 #!/bin/sh
-
-until cd /app
-do
-    echo "Waiting for server volume..."
+echo "Server entrypoint starting..."
+# Wait for DB name resolution and port
+echo "Waiting for db:5432..."
+while ! nc -z db 5432; do
+  echo "Database unavailable, sleeping..."
+  sleep 2
 done
+echo "Database is up!"
 
+# Optional: Wait for Redis if needed by Django startup
+# echo "Waiting for redis:6379..."
+# while ! nc -z redis 6379; do
+#   echo "Redis unavailable, sleeping..."
+#   sleep 2
+# done
+# echo "Redis is up!"
 
-until python manage.py migrate
-do
-    echo "Waiting for db to be ready..."
-    sleep 2
-done
+# Now run migrate (should connect faster now)
+echo "Running migrations..."
+python manage.py migrate --noinput # Use --noinput in scripts
 
-
-# python manage.py collectstatic --noinput
-
-# python manage.py createsuperuser --noinput
-
-# gunicorn scw-project.wsgi --bind 0.0.0.0:8000 --workers 4 --threads 4
-
-# for debug
-python manage.py runserver 0.0.0.0:8000
+# Start server
+echo "Starting Django server..."
+exec python manage.py runserver 0.0.0.0:8000
