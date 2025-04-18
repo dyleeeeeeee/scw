@@ -2,7 +2,7 @@
 echo "Server entrypoint starting..."
 # Wait for DB name resolution and port
 echo "Waiting for db:5432..."
-while ! nc -z db 5432; do
+while ! nc -z localhost 5432; do
   echo "Database unavailable, sleeping..."
   sleep 2
 done
